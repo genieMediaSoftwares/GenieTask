@@ -1,79 +1,3 @@
-// import { useState } from "react";
-// import { auth } from "../firebase";
-// import { signInWithEmailAndPassword } from "firebase/auth";
-// import { FaEye, FaEyeSlash } from "react-icons/fa";
-// import { useNavigate } from "react-router-dom"; // ✅ FIX
-
-// export default function Login() {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [showPassword, setShowPassword] = useState(false);
-
-//   const navigate = useNavigate(); // ✅ FIX
-
-//   const handleLogin = async (e) => {
-//     e.preventDefault();
-
-//     try {
-//       const userCred = await signInWithEmailAndPassword(
-//         auth,
-//         email,
-//         password
-//       );
-
-//       const [name, role] = userCred.user.displayName.split("|");
-
-//       if (role === "admin") {
-//         navigate("/admin");
-//       } else {
-//         navigate("/employee");
-//       }
-
-//     } catch (err) {
-//       alert(err.message);
-//     }
-//   };
-
-//   return (
-//     <div className="flex justify-center items-center h-screen bg-gray-900 text-white">
-//       <form
-//         onSubmit={handleLogin}
-//         className="bg-gray-800 p-8 rounded-lg w-96"
-//       >
-//         <h2 className="text-2xl mb-4 text-center">Login</h2>
-
-//         {/* Email */}
-//         <input
-//           type="email"
-//           placeholder="Email"
-//           className="w-full p-2 mb-3 rounded text-black"
-//           onChange={(e) => setEmail(e.target.value)}
-//         />
-
-//         {/* Password */}
-//         <div className="relative mb-3">
-//           <input
-//             type={showPassword ? "text" : "password"}
-//             placeholder="Password"
-//             className="w-full p-2 rounded text-black"
-//             onChange={(e) => setPassword(e.target.value)}
-//           />
-
-//           <span
-//             className="absolute right-3 top-2.5 cursor-pointer text-gray-700"
-//             onClick={() => setShowPassword(!showPassword)}
-//           >
-//             {showPassword ? <FaEyeSlash /> : <FaEye />}
-//           </span>
-//         </div>
-
-//         <button className="w-full bg-green-500 p-2 rounded hover:bg-green-600">
-//           Login
-//         </button>
-//       </form>
-//     </div>
-//   );
-// }
 import { useState } from "react";
 import { auth } from "../firebase";
 import {
@@ -105,7 +29,6 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      // ✅ Set persistence BEFORE signing in
       await setPersistence(
         auth,
         rememberMe ? browserLocalPersistence : browserSessionPersistence
@@ -114,7 +37,6 @@ export default function Login() {
       const userCred = await signInWithEmailAndPassword(auth, email, password);
       const [name, role] = userCred.user.displayName.split("|");
 
-      // ✅ Role mismatch guard
       if (role !== selectedRole) {
         await auth.signOut();
         if (selectedRole === "employee") {
@@ -150,7 +72,6 @@ export default function Login() {
 
   const isAdmin = selectedRole === "admin";
 
-  // ─── Role Selection Screen ─────────────────────────────────────────────────
   if (!selectedRole) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center px-4 py-10">
@@ -213,12 +134,10 @@ export default function Login() {
     );
   }
 
-  // ─── Login Form ────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
       <ToastContainer position="top-right" autoClose={4500} />
 
-      {/* Left Panel */}
       <div className={`w-full lg:w-2/5 lg:min-h-screen flex flex-col
         px-6 py-8 sm:px-10 sm:py-10
         ${isAdmin
@@ -260,12 +179,10 @@ export default function Login() {
         </p>
       </div>
 
-      {/* Right Panel */}
       <div className="flex-1 flex items-center justify-center bg-white
         px-4 py-10 sm:px-8 sm:py-12 lg:px-12">
         <div className="w-full max-w-sm">
 
-          {/* Mobile role pill */}
           <div className={`inline-flex items-center gap-1.5 text-xs font-semibold
             px-3 py-1 rounded-full mb-4 sm:hidden
             ${isAdmin ? "bg-violet-100 text-violet-700" : "bg-emerald-100 text-emerald-700"}`}>
@@ -283,7 +200,6 @@ export default function Login() {
           </h2>
 
           <form onSubmit={handleLogin} className="space-y-4">
-            {/* Email */}
             <div>
               <label className="block text-xs font-medium text-slate-500 mb-1.5">
                 Email Address
@@ -303,7 +219,6 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <label className="block text-xs font-medium text-slate-500 mb-1.5">
                 Password
@@ -329,15 +244,12 @@ export default function Login() {
               </div>
             </div>
 
-            {/* ✅ Remember Me + Forgot Password */}
             <div className="flex items-center justify-between flex-wrap gap-2">
 
-              {/* Clicking the entire row toggles the checkbox */}
               <div
                 className="flex items-center gap-2 cursor-pointer select-none"
                 onClick={() => setRememberMe((prev) => !prev)}
               >
-                {/* Custom checkbox box */}
                 <div
                   className={`w-4 h-4 rounded border-2 flex items-center justify-center
                     transition-all duration-150
@@ -353,7 +265,6 @@ export default function Login() {
 
                 <span className="text-xs text-slate-500">Remember me</span>
 
-                {/* Badge shown when checked */}
                 {rememberMe && (
                   <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold
                     ${isAdmin
@@ -373,7 +284,6 @@ export default function Login() {
               </span>
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
               className={`w-full py-2.5 sm:py-3 rounded-xl text-white font-semibold text-sm
@@ -393,7 +303,6 @@ export default function Login() {
               <div className="flex-1 h-px bg-slate-100" />
             </div>
 
-            {/* Back to Role Selection */}
             <button
               type="button"
               onClick={() => setSelectedRole(null)}

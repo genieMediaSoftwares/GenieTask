@@ -14,7 +14,6 @@ export default function EmailHandler() {
       const result = await signInWithEmailLink(auth, emailToUse, window.location.href);
       window.localStorage.removeItem("emailForSignIn");
 
-      // Read role from displayName (stored as "Name|role" during signup)
       const displayName = result.user.displayName || "";
       const role = displayName.split("|")[1] || "employee";
 
@@ -44,7 +43,6 @@ export default function EmailHandler() {
     if (savedEmail) {
       processSignIn(savedEmail);
     } else {
-      // User opened link on a different device — ask for email
       setStatus("needEmail");
     }
   }, []);
@@ -53,13 +51,11 @@ export default function EmailHandler() {
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
       <div className="bg-white rounded-2xl shadow-lg p-8 max-w-sm w-full text-center">
 
-        {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-6">
           <FaCheckDouble className="text-violet-600 text-xl" />
           <span className="text-xl font-bold text-slate-800 tracking-tight">GenieTask</span>
         </div>
 
-        {/* Verifying */}
         {status === "verifying" && (
           <>
             <FaSpinner className="text-violet-500 text-4xl mx-auto mb-4 animate-spin" />
@@ -68,7 +64,6 @@ export default function EmailHandler() {
           </>
         )}
 
-        {/* Success */}
         {status === "success" && (
           <>
             <div className="text-5xl mb-4">✅</div>
@@ -77,7 +72,6 @@ export default function EmailHandler() {
           </>
         )}
 
-        {/* Error */}
         {status === "error" && (
           <>
             <div className="text-5xl mb-4">❌</div>
@@ -95,7 +89,6 @@ export default function EmailHandler() {
           </>
         )}
 
-        {/* Different device — ask for email */}
         {status === "needEmail" && (
           <>
             <div className="text-4xl mb-4">📧</div>

@@ -24,7 +24,6 @@ export default function ItemLists() {
           : [],
       }));
       setLists(arr);
-      // Auto-select first list if none selected
       setSelectedId((prev) => prev ?? (arr[0]?.id || null));
     });
   }, [user?.uid]);
@@ -74,7 +73,6 @@ export default function ItemLists() {
       <h1 className="text-2xl font-bold text-slate-800 mb-5">Item Lists</h1>
 
       <div className="flex gap-5 h-[calc(100vh-160px)] min-h-[500px]">
-        {/* Left panel — list of lists */}
         <div className="w-64 shrink-0 bg-white rounded-xl shadow-sm border border-slate-100 flex flex-col overflow-hidden">
           <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
             <span className="text-sm font-semibold text-slate-700">My Lists</span>
@@ -86,7 +84,6 @@ export default function ItemLists() {
             </button>
           </div>
 
-          {/* New list input */}
           {addingList && (
             <div className="px-3 py-2 border-b border-slate-100 flex gap-2">
               <input
@@ -150,7 +147,6 @@ export default function ItemLists() {
           </div>
         </div>
 
-        {/* Right panel — items */}
         <div className="flex-1 bg-white rounded-xl shadow-sm border border-slate-100 flex flex-col overflow-hidden">
           {!selectedList ? (
             <div className="flex-1 flex items-center justify-center text-slate-400">
@@ -161,7 +157,6 @@ export default function ItemLists() {
             </div>
           ) : (
             <>
-              {/* Header */}
               <div className="px-5 py-4 border-b border-slate-100">
                 <div className="flex items-center justify-between">
                   <h2 className="font-semibold text-slate-800 text-lg">{selectedList.title}</h2>
@@ -171,7 +166,6 @@ export default function ItemLists() {
                     </span>
                   )}
                 </div>
-                {/* Progress bar */}
                 {totalCount > 0 && (
                   <div className="mt-2 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                     <div
@@ -182,7 +176,6 @@ export default function ItemLists() {
                 )}
               </div>
 
-              {/* Items list */}
               <div className="flex-1 overflow-y-auto py-2">
                 {selectedList.items.length === 0 ? (
                   <div className="text-center py-12 text-slate-400">
@@ -196,7 +189,6 @@ export default function ItemLists() {
                         key={item.id}
                         className="flex items-center gap-3 px-5 py-3 group hover:bg-slate-50/60 transition"
                       >
-                        {/* Circle toggle */}
                         <button
                           onClick={() => handleToggleItem(item.id, item.done)}
                           className={`w-5 h-5 shrink-0 rounded-full border-2 flex items-center justify-center transition
@@ -228,7 +220,6 @@ export default function ItemLists() {
                 )}
               </div>
 
-              {/* Add item input */}
               <div className="px-5 py-4 border-t border-slate-100">
                 <div className="flex gap-3">
                   <input

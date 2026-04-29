@@ -1,30 +1,3 @@
-// import { Navigate } from "react-router-dom";
-// import { auth } from "../firebase";
-
-// export default function ProtectedRoute({ children, roleRequired }) {
-//   const user = auth.currentUser;
-
-//   // ❌ Not logged in
-//   if (!user) {
-//     return <Navigate to="/login" />;
-//   }
-
-//   // 🔥 Extract role
-//   const [name, role] = user.displayName.split("|");
-
-//   // ❌ Wrong role
-//   if (role !== roleRequired) {
-//     return <Navigate to="/login" />;
-//   }
-
-//   // ✅ Allowed
-//   return children;
-// }
-
-
-
-
-
 import { useEffect, useState } from "react";
 import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";

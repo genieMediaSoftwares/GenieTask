@@ -19,7 +19,6 @@ export default function TeamMembers() {
   const [adding, setAdding]           = useState(false);
   const [error, setError]             = useState("");
 
-  // ── Fetch members from Firebase ──────────────────────────────────
   useEffect(() => {
     if (!user) return;
     return onValue(ref(db, "teamMembers"), (snap) => {
@@ -29,7 +28,6 @@ export default function TeamMembers() {
     });
   }, [user?.uid]);
 
-  // ── Add member ───────────────────────────────────────────────────
   const handleAdd = async () => {
     setError("");
     if (!newName.trim())  { setError("Name is required.");        return; }
@@ -54,12 +52,10 @@ export default function TeamMembers() {
     setNewDept(""); setShowModal(false); setAdding(false);
   };
 
-  // ── Delete member ────────────────────────────────────────────────
   const handleDelete = async (id) => {
     await remove(ref(db, `teamMembers/${id}`));
   };
 
-  // ── Filter ───────────────────────────────────────────────────────
   const filtered = members.filter(
     (m) =>
       m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -73,7 +69,6 @@ export default function TeamMembers() {
   return (
     <div className="p-6 h-full">
 
-      {/* ── Page Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Team Members</h1>
@@ -89,14 +84,12 @@ export default function TeamMembers() {
         </button>
       </div>
 
-      {/* ── Stat Cards ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
         <StatCard icon={<FaUsers />} label="Total Members" value={members.length} color="violet" />
         <StatCard icon={<FaUser />}  label="Employees"     value={totalEmployees}  color="emerald" />
         <StatCard icon={<FaUserTie />} label="Admins"      value={totalAdmins}     color="blue" />
       </div>
 
-      {/* ── Search ── */}
       <div className="relative mb-5">
         <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
         <input
@@ -118,9 +111,7 @@ export default function TeamMembers() {
         )}
       </div>
 
-      {/* ── Members Table ── */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-        {/* Table Header */}
         <div className="hidden sm:grid grid-cols-[2fr_1.5fr_1.5fr_1fr_48px] gap-4
           px-5 py-3 bg-slate-50 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wide">
           <span>Name</span>
@@ -153,12 +144,10 @@ export default function TeamMembers() {
         )}
       </div>
 
-      {/* ── Add Member Modal ── */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
 
-            {/* Modal header */}
             <div className="flex items-center justify-between mb-5">
               <div>
                 <h3 className="text-lg font-bold text-slate-800">Add Team Member</h3>
@@ -172,7 +161,6 @@ export default function TeamMembers() {
               </button>
             </div>
 
-            {/* Error */}
             {error && (
               <div className="mb-4 px-3 py-2 bg-red-50 border border-red-100 rounded-lg
                 text-xs text-red-600 font-medium">
@@ -181,7 +169,6 @@ export default function TeamMembers() {
             )}
 
             <div className="space-y-4">
-              {/* Full Name */}
               <ModalField
                 label="Full Name"
                 icon={<FaUser />}
@@ -190,7 +177,6 @@ export default function TeamMembers() {
                 onChange={(e) => setNewName(e.target.value)}
               />
 
-              {/* Employee ID */}
               <ModalField
                 label="Employee ID"
                 icon={<FaIdBadge />}
@@ -199,7 +185,6 @@ export default function TeamMembers() {
                 onChange={(e) => setNewEmpId(e.target.value)}
               />
 
-              {/* Department */}
               <ModalField
                 label="Department"
                 icon={<FaUsers />}
@@ -208,7 +193,6 @@ export default function TeamMembers() {
                 onChange={(e) => setNewDept(e.target.value)}
               />
 
-              {/* Role */}
               <div>
                 <label className="block text-xs font-medium text-slate-500 mb-1.5">Role</label>
                 <div className="grid grid-cols-2 gap-3">
@@ -234,7 +218,6 @@ export default function TeamMembers() {
               </div>
             </div>
 
-            {/* Modal Actions */}
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => { setShowModal(false); setError(""); }}
@@ -260,7 +243,6 @@ export default function TeamMembers() {
   );
 }
 
-// ── Sub-components ────────────────────────────────────────────────────────────
 
 function StatCard({ icon, label, value, color }) {
   const colors = {
@@ -313,12 +295,10 @@ function MemberRow({ member, onDelete }) {
         <span className="text-sm text-slate-600 font-mono">{member.employeeId}</span>
       </div>
 
-      {/* Department */}
       <div className="hidden sm:block">
         <span className="text-sm text-slate-500">{member.department || "General"}</span>
       </div>
 
-      {/* Role Badge */}
       <div>
         <span className={`inline-flex items-center gap-1.5 text-xs font-semibold
           px-2.5 py-1 rounded-full
@@ -331,7 +311,6 @@ function MemberRow({ member, onDelete }) {
         </span>
       </div>
 
-      {/* Delete */}
       <button
         onClick={onDelete}
         className="opacity-0 group-hover:opacity-100 p-2 text-slate-400
