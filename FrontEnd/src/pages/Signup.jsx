@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { auth, db } from "../firebase";
-import { createUserWithEmailAndPassword, updateProfile, sendSignInLinkToEmail } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { ref, set, push, get, query, orderByChild, equalTo } from "firebase/database";
 import { useNavigate } from "react-router-dom";
 import {
@@ -11,24 +11,24 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Signup() {
-  const [name,            setName]            = useState("");
-  const [email,           setEmail]           = useState("");
-  const [password,        setPassword]        = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [role,            setRole]            = useState("employee");
-  const [employeeId,      setEmployeeId]      = useState("");
+  const [role, setRole] = useState("employee");
+  const [employeeId, setEmployeeId] = useState("");
 
-  const [showPassword,        setShowPassword]        = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loading,             setLoading]             = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) { toast.error("Passwords do not match!");              return; }
-    if (password.length < 6)          { toast.error("Password must be at least 6 characters"); return; }
+    if (password !== confirmPassword) { toast.error("Passwords do not match!"); return; }
+    if (password.length < 6) { toast.error("Password must be at least 6 characters"); return; }
     if (role === "employee" && !employeeId.trim()) {
       toast.error("Employee ID is required");
       return;
@@ -49,13 +49,13 @@ export default function Signup() {
 
       await set(ref(db, `users/${uid}`), {
         uid,
-        name:        name.trim(),
-        email:       email.trim().toLowerCase(),
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
         role,
-        employeeId:  empIdClean,
+        employeeId: empIdClean,
         designation: role === "admin" ? "Administrator" : "Employee",
-        department:  "General",
-        createdAt:   new Date().toISOString(),
+        department: "General",
+        createdAt: new Date().toISOString(),
       });
 
 
@@ -71,26 +71,26 @@ export default function Signup() {
       if (!isDuplicate) {
         await push(ref(db, "teamMembers"), {
           uid,                          // Links roster entry back to Firebase Auth
-          name:        name.trim(),
-          employeeId:  role === "employee" ? empIdClean : `ADM-${uid.slice(0, 6).toUpperCase()}`,
+          name: name.trim(),
+          employeeId: role === "employee" ? empIdClean : `ADM-${uid.slice(0, 6).toUpperCase()}`,
           role,
-          department:  "General",
+          department: "General",
           designation: role === "admin" ? "Administrator" : "Employee",
-          email:       email.trim().toLowerCase(),
-          addedAt:     new Date().toISOString(),
-          addedBy:     uid,
+          email: email.trim().toLowerCase(),
+          addedAt: new Date().toISOString(),
+          addedBy: uid,
         });
       }
 
-      const actionCodeSettings = {
-        url: `${window.location.origin}/email-handler`,
-        handleCodeInApp: true,
-      };
-      await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-      window.localStorage.setItem("emailForSignIn", email);
-
-      toast.success("Account created! Check your email for the sign-in link.");
+      // const actionCodeSettings = {
+      //   url: `${window.location.origin}/email-handler`,
+      //   handleCodeInApp: true,
+      // };
+      toast.success("Account created! Redirecting to login...");
       setTimeout(() => navigate("/login"), 2000);
+      // await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+      // window.localStorage.setItem("emailForSignIn", email);
+    
 
     } catch (err) {
       toast.error(err.message);
@@ -99,7 +99,7 @@ export default function Signup() {
     }
   };
 
-  const isAdmin    = role === "admin";
+  const isAdmin = role === "admin";
   const isEmployee = role === "employee";
 
   return (
@@ -108,7 +108,7 @@ export default function Signup() {
 
       <div className={`w-full lg:w-2/5 lg:min-h-screen flex flex-col px-6 py-8 sm:px-10 sm:py-10
         ${isAdmin ? "bg-gradient-to-br from-violet-700 to-purple-900"
-                  : "bg-gradient-to-br from-emerald-600 to-teal-800"}`}>
+          : "bg-gradient-to-br from-emerald-600 to-teal-800"}`}>
 
         <div className="flex items-center gap-2 mb-6 lg:mb-0">
           <FaCheckDouble className="text-white text-xl" />

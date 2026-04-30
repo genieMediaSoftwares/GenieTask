@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import EmailHandler from "./pages/EmailHandler";
+// import EmailHandler from "./pages/EmailHandler";
 
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminTasks from "./pages/AdminTasks";
@@ -27,7 +27,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Signup />} />
-        <Route path="/email-handler" element={<EmailHandler />} />
+        {/* <Route path="/email-handler" element={<EmailHandler />} /> */}
 
         <Route
           path="/admin"
