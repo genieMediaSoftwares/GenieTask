@@ -3,8 +3,8 @@ import { auth, db } from "../firebase";
 import { ref, onValue, set, update } from "firebase/database";
 
 const SHIFTS = [
-  { id: "morning", name: "Morning Shift", start: "09:00", end: "14:00" },
-  { id: "evening", name: "Evening Shift", start: "14:00", end: "20:00" },
+  { id: "morning", name: "Morning Shift", start: "09:30", end: "18:30" },
+  { id: "evening", name: "Evening Shift", start: "14:00", end: "23:00" },
   { id: "night",   name: "Night Shift",   start: "21:00", end: "04:00" },
 ];
 
