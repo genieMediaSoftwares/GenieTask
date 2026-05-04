@@ -8,23 +8,23 @@ const STATUSES = ["To Do", "In Progress", "In Review", "Done"];
 const PRIORITIES = ["High", "Medium", "Low"];
 
 const STATUS_CFG = {
-  "To Do":       { color: "#64748b", bg: "#f8fafc", border: "#e2e8f0", text: "#475569", progress: 0,   order: 0, label: "Pending"     },
-  "In Progress": { color: "#2563eb", bg: "#eff6ff", border: "#bfdbfe", text: "#1d4ed8", progress: 40,  order: 1, label: "In Progress" },
-  "In Review":   { color: "#7c3aed", bg: "#f5f3ff", border: "#ddd6fe", text: "#5b21b6", progress: 75,  order: 2, label: "In Review"   },
-  "Done":        { color: "#059669", bg: "#ecfdf5", border: "#a7f3d0", text: "#065f46", progress: 100, order: 3, label: "Done"        },
+  "To Do": { color: "#64748b", bg: "#f8fafc", border: "#e2e8f0", text: "#475569", progress: 0, order: 0, label: "Pending" },
+  "In Progress": { color: "#2563eb", bg: "#eff6ff", border: "#bfdbfe", text: "#1d4ed8", progress: 40, order: 1, label: "In Progress" },
+  "In Review": { color: "#7c3aed", bg: "#f5f3ff", border: "#ddd6fe", text: "#5b21b6", progress: 75, order: 2, label: "In Review" },
+  "Done": { color: "#059669", bg: "#ecfdf5", border: "#a7f3d0", text: "#065f46", progress: 100, order: 3, label: "Done" },
 };
 
 const PRIORITY_CFG = {
-  High:   { color: "#dc2626", bg: "#fef2f2", icon: "●", label: "High"   },
+  High: { color: "#dc2626", bg: "#fef2f2", icon: "●", label: "High" },
   Medium: { color: "#d97706", bg: "#fffbeb", icon: "●", label: "Medium" },
-  Low:    { color: "#16a34a", bg: "#f0fdf4", icon: "●", label: "Low"    },
+  Low: { color: "#16a34a", bg: "#f0fdf4", icon: "●", label: "Low" },
 };
 
 const MOODS = [
-  { value: "great",     label: "Great",     emoji: "🚀", color: "#059669" },
-  { value: "good",      label: "Good",      emoji: "😊", color: "#2563eb" },
-  { value: "okay",      label: "Okay",      emoji: "😐", color: "#d97706" },
-  { value: "blocked",   label: "Blocked",   emoji: "🚧", color: "#dc2626" },
+  { value: "great", label: "Great", emoji: "🚀", color: "#059669" },
+  { value: "good", label: "Good", emoji: "😊", color: "#2563eb" },
+  { value: "okay", label: "Okay", emoji: "😐", color: "#d97706" },
+  { value: "blocked", label: "Blocked", emoji: "🚧", color: "#dc2626" },
 ];
 
 
@@ -33,9 +33,9 @@ const todayISO = () => new Date().toISOString().slice(0, 10); // YYYY-MM-DD
 function dueMeta(iso) {
   if (!iso) return null;
   const days = Math.ceil((new Date(iso) - new Date()) / 86_400_000);
-  if (days < 0)   return { label: `${Math.abs(days)}d overdue`, color: "#dc2626", urgent: true  };
-  if (days === 0) return { label: "Due today",                  color: "#d97706", urgent: true  };
-  if (days <= 3)  return { label: `${days}d left`,              color: "#d97706", urgent: false };
+  if (days < 0) return { label: `${Math.abs(days)}d overdue`, color: "#dc2626", urgent: true };
+  if (days === 0) return { label: "Due today", color: "#d97706", urgent: true };
+  if (days <= 3) return { label: `${days}d left`, color: "#d97706", urgent: false };
   return {
     label: new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
     color: "#94a3b8",
@@ -47,10 +47,10 @@ function timeAgo(iso) {
   if (!iso) return "";
   const diff = Date.now() - new Date(iso).getTime();
   const mins = Math.floor(diff / 60_000);
-  if (mins < 1)  return "just now";
+  if (mins < 1) return "just now";
   if (mins < 60) return `${mins}m ago`;
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24)  return `${hrs}h ago`;
+  if (hrs < 24) return `${hrs}h ago`;
   return `${Math.floor(hrs / 24)}d ago`;
 }
 
@@ -61,7 +61,7 @@ function calcStreak(logs) {
   for (let i = 0; i < 365; i++) {
     const key = check.toISOString().slice(0, 10);
     if (logs[key]) streak++;
-    else if (i > 0) break; 
+    else if (i > 0) break;
     check.setDate(check.getDate() - 1);
   }
   return streak;
@@ -101,13 +101,13 @@ function ProgressBar({ percent, color, showLabel = true }) {
 function StatusPill({ status, active, onClick, size = "sm" }) {
   const cfg = STATUS_CFG[status] || STATUS_CFG["To Do"];
   const pad = size === "xs" ? "4px 9px" : "6px 13px";
-  const fs  = size === "xs" ? 10 : 11;
+  const fs = size === "xs" ? 10 : 11;
   return (
     <button onClick={onClick} style={{
       padding: pad, borderRadius: 20, fontSize: fs, fontWeight: 700,
       cursor: "pointer", transition: "all 0.15s",
       background: active ? cfg.color : cfg.bg,
-      color:      active ? "#fff"    : cfg.text,
+      color: active ? "#fff" : cfg.text,
       border: `1.5px solid ${active ? cfg.color : cfg.border}`,
       boxShadow: active ? `0 2px 8px ${cfg.color}40` : "none",
     }}>{cfg.label}</button>
@@ -116,18 +116,18 @@ function StatusPill({ status, active, onClick, size = "sm" }) {
 
 
 function CheckInDrawer({ task, todayLog, onClose, onSubmit }) {
-  const width   = useWindowWidth();
-  const mobile  = width < 640;
-  const cfg     = STATUS_CFG[task.status] || STATUS_CFG["To Do"];
+  const width = useWindowWidth();
+  const mobile = width < 640;
+  const cfg = STATUS_CFG[task.status] || STATUS_CFG["To Do"];
 
-  const [status,    setStatus]    = useState(todayLog?.status  || task.status || "To Do");
-  const [percent,   setPercent]   = useState(todayLog?.percent ?? task.progressPercent ?? cfg.progress);
-  const [mood,      setMood]      = useState(todayLog?.mood    || "good");
-  const [achieved,  setAchieved]  = useState(todayLog?.achieved  || "");
-  const [planned,   setPlanned]   = useState(todayLog?.planned   || "");
-  const [blockers,  setBlockers]  = useState(todayLog?.blockers  || "");
-  const [saving,    setSaving]    = useState(false);
-  const [saved,     setSaved]     = useState(false);
+  const [status, setStatus] = useState(todayLog?.status || task.status || "To Do");
+  const [percent, setPercent] = useState(todayLog?.percent ?? task.progressPercent ?? cfg.progress);
+  const [mood, setMood] = useState(todayLog?.mood || "good");
+  const [achieved, setAchieved] = useState(todayLog?.achieved || "");
+  const [planned, setPlanned] = useState(todayLog?.planned || "");
+  const [blockers, setBlockers] = useState(todayLog?.blockers || "");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const activeCfg = STATUS_CFG[status] || STATUS_CFG["To Do"];
 
   const alreadyCheckedIn = !!todayLog?.submittedAt;
@@ -216,6 +216,25 @@ function CheckInDrawer({ task, todayLog, onClose, onSubmit }) {
               <p style={{ fontSize: 12, color: "#64748b", margin: "4px 0 0", fontWeight: 500 }}>
                 Daily Check-In · {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })}
               </p>
+              {task.description && (
+                <div style={{
+                  marginTop: 10,
+                  background: "#f8fafc",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: 8,
+                  padding: "8px 12px",
+                }}>
+                  <p style={{
+                    fontSize: 9, fontWeight: 700, color: "#94a3b8",
+                    textTransform: "uppercase", letterSpacing: "0.08em",
+                    margin: "0 0 4px",
+                  }}>📋 Task Description</p>
+                  <p style={{
+                    fontSize: 12, color: "#334155",
+                    margin: 0, lineHeight: 1.6, fontWeight: 400,
+                  }}>{task.description}</p>
+                </div>
+              )}
             </div>
             <button onClick={onClose} style={{
               width: 32, height: 32, borderRadius: 8, flexShrink: 0,
@@ -246,7 +265,7 @@ function CheckInDrawer({ task, todayLog, onClose, onSubmit }) {
                   fontSize: mobile ? 11 : 12, fontWeight: 700,
                   cursor: "pointer", transition: "all 0.15s",
                   background: mood === m.value ? m.color : "#f8fafc",
-                  color:      mood === m.value ? "#fff"   : "#64748b",
+                  color: mood === m.value ? "#fff" : "#64748b",
                   border: `1.5px solid ${mood === m.value ? m.color : "#e2e8f0"}`,
                   display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
                 }}>
@@ -296,7 +315,7 @@ function CheckInDrawer({ task, todayLog, onClose, onSubmit }) {
               rows={mobile ? 2 : 3}
               style={inputStyle}
               onFocus={e => { e.target.style.borderColor = "#4f46e5"; }}
-              onBlur={e  => { e.target.style.borderColor = "#e2e8f0"; }}
+              onBlur={e => { e.target.style.borderColor = "#e2e8f0"; }}
             />
           </div>
 
@@ -310,7 +329,7 @@ function CheckInDrawer({ task, todayLog, onClose, onSubmit }) {
               rows={mobile ? 2 : 2}
               style={inputStyle}
               onFocus={e => { e.target.style.borderColor = "#4f46e5"; }}
-              onBlur={e  => { e.target.style.borderColor = "#e2e8f0"; }}
+              onBlur={e => { e.target.style.borderColor = "#e2e8f0"; }}
             />
           </div>
 
@@ -324,7 +343,7 @@ function CheckInDrawer({ task, todayLog, onClose, onSubmit }) {
               rows={2}
               style={inputStyle}
               onFocus={e => { e.target.style.borderColor = "#dc2626"; }}
-              onBlur={e  => { e.target.style.borderColor = "#e2e8f0"; }}
+              onBlur={e => { e.target.style.borderColor = "#e2e8f0"; }}
             />
           </div>
 
@@ -341,9 +360,9 @@ function CheckInDrawer({ task, todayLog, onClose, onSubmit }) {
             style={{
               width: "100%",
               padding: mobile ? "13px 0" : "14px 0",
-              background: saved   ? "#059669"
-                        : saving  ? "#334155"
-                        :           "#0f172a",
+              background: saved ? "#059669"
+                : saving ? "#334155"
+                  : "#0f172a",
               color: "#fff", border: "none", borderRadius: 12,
               fontSize: mobile ? 14 : 15, fontWeight: 800,
               cursor: saving ? "wait" : "pointer",
@@ -364,7 +383,7 @@ function CheckInDrawer({ task, todayLog, onClose, onSubmit }) {
             ) : saved ? "✓ Check-In Saved!" : (
               <>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12"/>
+                  <polyline points="20 6 9 17 4 12" />
                 </svg>
                 {alreadyCheckedIn ? "Update Today's Check-In" : "Submit Daily Check-In"}
               </>
@@ -389,7 +408,7 @@ function CheckInDrawer({ task, todayLog, onClose, onSubmit }) {
 
 
 function HistoryDrawer({ task, logs, onClose }) {
-  const width  = useWindowWidth();
+  const width = useWindowWidth();
   const mobile = width < 640;
 
   useEffect(() => {
@@ -409,7 +428,7 @@ function HistoryDrawer({ task, logs, onClose }) {
       .sort((a, b) => b.date.localeCompare(a.date));
   }, [logs]);
 
-  const streak   = calcStreak(logs);
+  const streak = calcStreak(logs);
   const totalDays = entries.length;
 
   return (
@@ -444,7 +463,7 @@ function HistoryDrawer({ task, logs, onClose }) {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             {[
               { label: "Check-in streak", value: `🔥 ${streak}d`, sub: streak > 0 ? "Keep going!" : "Start today" },
-              { label: "Total updates",   value: totalDays,        sub: "across all days" },
+              { label: "Total updates", value: totalDays, sub: "across all days" },
             ].map(s => (
               <div key={s.label} style={{ background: "#f8fafc", borderRadius: 10, padding: "10px 12px", border: "1px solid #f1f5f9" }}>
                 <p style={{ fontSize: 9, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.07em", margin: "0 0 3px" }}>{s.label}</p>
@@ -464,8 +483,8 @@ function HistoryDrawer({ task, logs, onClose }) {
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {entries.map((entry, i) => {
-                const sCfg  = STATUS_CFG[entry.status] || STATUS_CFG["To Do"];
-                const mCfg  = MOODS.find(m => m.value === entry.mood) || MOODS[1];
+                const sCfg = STATUS_CFG[entry.status] || STATUS_CFG["To Do"];
+                const mCfg = MOODS.find(m => m.value === entry.mood) || MOODS[1];
                 const isToday = entry.date === todayISO();
                 return (
                   <div key={entry.date} style={{
@@ -545,11 +564,11 @@ function HistoryDrawer({ task, logs, onClose }) {
 
 
 function TaskCard({ task, index, todayLog, logs, onCheckIn, onHistory, onQuickStatus, updating }) {
-  const sCfg      = STATUS_CFG[task.status]    || STATUS_CFG["To Do"];
-  const pCfg      = PRIORITY_CFG[task.priority] || PRIORITY_CFG["Medium"];
-  const due       = dueMeta(task.dueDate);
-  const pct       = task.progressPercent ?? sCfg.progress;
-  const streak    = useMemo(() => calcStreak(logs), [logs]);
+  const sCfg = STATUS_CFG[task.status] || STATUS_CFG["To Do"];
+  const pCfg = PRIORITY_CFG[task.priority] || PRIORITY_CFG["Medium"];
+  const due = dueMeta(task.dueDate);
+  const pct = task.progressPercent ?? sCfg.progress;
+  const streak = useMemo(() => calcStreak(logs), [logs]);
   const checkedIn = !!todayLog?.submittedAt;
 
   return (
@@ -587,6 +606,14 @@ function TaskCard({ task, index, todayLog, logs, onCheckIn, onHistory, onQuickSt
               color: task.status === "Done" ? "#94a3b8" : "#0f172a",
               textDecoration: task.status === "Done" ? "line-through" : "none",
             }}>{task.title}</p>
+            {task.description && (
+              <p style={{
+                fontSize: 12, fontWeight: 400, color: "#64748b",
+                margin: "5px 0 0", lineHeight: 1.55,
+                display: "-webkit-box", WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical", overflow: "hidden",
+              }}>{task.description}</p>
+            )}
           </div>
 
           {/* Streak badge */}
@@ -675,8 +702,8 @@ function TaskCard({ task, index, todayLog, logs, onCheckIn, onHistory, onQuickSt
             style={{
               flex: 1, padding: "8px 0", borderRadius: 10,
               background: checkedIn ? "#f5f3ff" : "#0f172a",
-              color:      checkedIn ? "#7c3aed" : "#fff",
-              border:     checkedIn ? "1.5px solid #ddd6fe" : "none",
+              color: checkedIn ? "#7c3aed" : "#fff",
+              border: checkedIn ? "1.5px solid #ddd6fe" : "none",
               fontSize: 12, fontWeight: 800, cursor: "pointer",
               transition: "all 0.15s",
             }}
@@ -717,15 +744,15 @@ function TaskCard({ task, index, todayLog, logs, onCheckIn, onHistory, onQuickSt
 
 export default function MyTasks() {
   const [currentUser, setCurrentUser] = useState(() => auth.currentUser);
-  const [tasks,       setTasks]       = useState([]);
-  const [dailyLogs,   setDailyLogs]   = useState({});  // { taskId: { "YYYY-MM-DD": {...} } }
-  const [loading,     setLoading]     = useState(true);
+  const [tasks, setTasks] = useState([]);
+  const [dailyLogs, setDailyLogs] = useState({});  // { taskId: { "YYYY-MM-DD": {...} } }
+  const [loading, setLoading] = useState(true);
   const [checkInTask, setCheckInTask] = useState(null);  // task for check-in drawer
   const [historyTask, setHistoryTask] = useState(null);  // task for history drawer
-  const [updatingId,  setUpdatingId]  = useState(null);
-  const [filter,      setFilter]      = useState("All");
+  const [updatingId, setUpdatingId] = useState(null);
+  const [filter, setFilter] = useState("All");
 
-  const width    = useWindowWidth();
+  const width = useWindowWidth();
   const isMobile = width < 640;
   const isTablet = width >= 640 && width < 1024;
 
@@ -777,7 +804,7 @@ export default function MyTasks() {
   const handleQuickStatus = useCallback(async (taskId, currentStatus) => {
     const NEXT = {
       "To Do": "In Progress", "In Progress": "In Review",
-      "In Review": "Done",    "Done": "To Do",
+      "In Review": "Done", "Done": "To Do",
     };
     const next = NEXT[currentStatus] || "To Do";
     setUpdatingId(taskId);
@@ -793,7 +820,7 @@ export default function MyTasks() {
 
   const handleCheckIn = useCallback(async ({ taskId, status, percent, mood, achieved, planned, blockers }) => {
     const today = todayISO();
-    const now   = new Date().toISOString();
+    const now = new Date().toISOString();
 
     await set(ref(db, `dailyLogs/${taskId}/${today}`), {
       status, percent, mood, achieved, planned, blockers,
@@ -811,11 +838,11 @@ export default function MyTasks() {
 
 
   const TABS = useMemo(() => [
-    { key: "All",         label: "All",        count: tasks.length },
-    { key: "To Do",       label: "Pending",    count: tasks.filter(t => t.status === "To Do").length },
-    { key: "In Progress", label: "In Progress",count: tasks.filter(t => t.status === "In Progress").length },
-    { key: "In Review",   label: "In Review",  count: tasks.filter(t => t.status === "In Review").length },
-    { key: "Done",        label: "Done",       count: tasks.filter(t => t.status === "Done").length },
+    { key: "All", label: "All", count: tasks.length },
+    { key: "To Do", label: "Pending", count: tasks.filter(t => t.status === "To Do").length },
+    { key: "In Progress", label: "In Progress", count: tasks.filter(t => t.status === "In Progress").length },
+    { key: "In Review", label: "In Review", count: tasks.filter(t => t.status === "In Review").length },
+    { key: "Done", label: "Done", count: tasks.filter(t => t.status === "Done").length },
   ], [tasks]);
 
   const filtered = useMemo(
@@ -823,8 +850,8 @@ export default function MyTasks() {
     [tasks, filter]
   );
 
-  const total  = tasks.length;
-  const done   = tasks.filter(t => t.status === "Done").length;
+  const total = tasks.length;
+  const done = tasks.filter(t => t.status === "Done").length;
   const avgPct = total > 0
     ? Math.round(tasks.reduce((s, t) => s + (t.progressPercent ?? STATUS_CFG[t.status]?.progress ?? 0), 0) / total)
     : 0;
@@ -950,10 +977,10 @@ export default function MyTasks() {
                   padding: isMobile ? "6px 11px" : "7px 15px",
                   borderRadius: 9, fontSize: isMobile ? 11 : 12, fontWeight: 700,
                   cursor: "pointer", transition: "all 0.15s",
-                  background: active ? "#fff"       : "transparent",
-                  color:      active ? "#0f172a"    : "#64748b",
-                  border:     active ? "1px solid #e2e8f0" : "1px solid transparent",
-                  boxShadow:  active ? "0 1px 4px rgba(0,0,0,0.06)" : "none",
+                  background: active ? "#fff" : "transparent",
+                  color: active ? "#0f172a" : "#64748b",
+                  border: active ? "1px solid #e2e8f0" : "1px solid transparent",
+                  boxShadow: active ? "0 1px 4px rgba(0,0,0,0.06)" : "none",
                   display: "flex", alignItems: "center", gap: 5, whiteSpace: "nowrap",
                 }}>
                   {tab.label}
@@ -962,7 +989,7 @@ export default function MyTasks() {
                     display: "inline-flex", alignItems: "center", justifyContent: "center",
                     borderRadius: 9, padding: "0 3px",
                     background: active ? "#0f172a" : "#e2e8f0",
-                    color:      active ? "#fff"    : "#64748b",
+                    color: active ? "#fff" : "#64748b",
                   }}>{tab.count}</span>
                 </button>
               );
