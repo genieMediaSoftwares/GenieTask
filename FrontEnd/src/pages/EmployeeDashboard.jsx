@@ -145,7 +145,7 @@ export default function EmployeeDashboard() {
       </div>
 
       <h1 className="text-xl sm:text-2xl font-bold text-slate-800 mb-0.5">
-        Good morning, {firstName} 👋
+        Welcome Geine Tasks Employee Dashboard, {firstName} 👋
       </h1>
       <p className="text-slate-400 text-xs sm:text-sm mb-5">{today}</p>
 

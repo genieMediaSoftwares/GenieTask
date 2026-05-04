@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { auth, db } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { ref, set, push, get, query, orderByChild, equalTo } from "firebase/database";
+import { ref, set, push, get } from "firebase/database";
 import { useNavigate } from "react-router-dom";
 import {
   FaEye, FaEyeSlash, FaEnvelope, FaLock,
@@ -9,6 +9,8 @@ import {
 } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+const MAX_ADMINS = 2;
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -34,6 +36,20 @@ export default function Signup() {
       return;
     }
 
+    if (role === "admin") {
+      const usersSnap = await get(ref(db, "users"));
+      const allUsers = usersSnap.val() || {};
+      const adminCount = Object.values(allUsers).filter((u) => u.role === "admin").length;
+
+      if (adminCount >= MAX_ADMINS) {
+        toast.error(
+          `Admin signup is closed. Only ${MAX_ADMINS} admin accounts are allowed.`,
+          { autoClose: 5000 }
+        );
+        return;
+      }
+    }
+
     setLoading(true);
     try {
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
@@ -46,7 +62,6 @@ export default function Signup() {
           : `${name.trim()}|${role}`,
       });
 
-
       await set(ref(db, `users/${uid}`), {
         uid,
         name: name.trim(),
@@ -57,7 +72,6 @@ export default function Signup() {
         department: "General",
         createdAt: new Date().toISOString(),
       });
-
 
       let isDuplicate = false;
       if (role === "employee" && empIdClean) {
@@ -70,7 +84,7 @@ export default function Signup() {
 
       if (!isDuplicate) {
         await push(ref(db, "teamMembers"), {
-          uid,                          // Links roster entry back to Firebase Auth
+          uid,
           name: name.trim(),
           employeeId: role === "employee" ? empIdClean : `ADM-${uid.slice(0, 6).toUpperCase()}`,
           role,
@@ -82,15 +96,8 @@ export default function Signup() {
         });
       }
 
-      // const actionCodeSettings = {
-      //   url: `${window.location.origin}/email-handler`,
-      //   handleCodeInApp: true,
-      // };
       toast.success("Account created! Redirecting to login...");
       setTimeout(() => navigate("/login"), 2000);
-      // await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-      // window.localStorage.setItem("emailForSignIn", email);
-    
 
     } catch (err) {
       toast.error(err.message);
@@ -122,6 +129,13 @@ export default function Signup() {
               ? "Set up your admin account to start managing your team and projects."
               : "Join your team on GenieTask and start collaborating today."}
           </p>
+          {isAdmin && (
+            <div className="mt-4 inline-flex items-center gap-2 bg-white/10 border border-white/20
+              text-white/80 text-xs px-3 py-1.5 rounded-full">
+              <FaShieldAlt className="text-yellow-300" />
+              Max {MAX_ADMINS} admin accounts allowed
+            </div>
+          )}
         </div>
 
         <div className="hidden lg:flex bg-white/10 backdrop-blur rounded-2xl p-8
@@ -158,9 +172,20 @@ export default function Signup() {
             account
           </h2>
 
+          {isAdmin && (
+            <div className="flex items-start gap-2 bg-amber-50 border border-amber-200
+              text-amber-700 text-xs rounded-xl px-3 py-2.5 mb-4">
+              <FaShieldAlt className="mt-0.5 shrink-0 text-amber-500" />
+              <span>
+                Only <strong>{MAX_ADMINS} admin accounts</strong> are permitted. If slots are full,
+                signup will be blocked.
+              </span>
+            </div>
+          )}
+
           <form onSubmit={handleSignup} className="space-y-4">
 
-            <FormField label="Full Name" icon={<FaUser />} isAdmin={isAdmin}>
+            <FormField label="Full Name" icon={<FaUser />}>
               <input type="text" placeholder="John Doe" required
                 className={inputCls}
                 onChange={(e) => setName(e.target.value)} />
@@ -184,7 +209,7 @@ export default function Signup() {
               </div>
             )}
 
-            <FormField label="Email Address" icon={<FaEnvelope />} isAdmin={isAdmin}>
+            <FormField label="Email Address" icon={<FaEnvelope />}>
               <input type="email" placeholder="you@example.com" required
                 className={inputCls}
                 onChange={(e) => setEmail(e.target.value)} />
